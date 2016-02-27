@@ -166,7 +166,7 @@ if (ajax.xhr2) {
 Receiving binary data in older browsers
 ---------------------------------------
 
-Getting binary data in legacy browsers needs a trick, as we can read it on [MDN](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/Sending_and_Receiving_Binary_Data#Receiving_binary_data_in_older_browsers). In this library, that's how we could handle it :
+Getting binary data in legacy browsers needs a trick, as we can read it on [MDN](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/Sending_and_Receiving_Binary_Data#Receiving_binary_data_in_older_browsers). In this library, that's how we could handle it:
 
 ```js
 let req = ajax.get('example.com/file', null, { send: false })
