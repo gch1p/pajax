@@ -17,23 +17,23 @@ Quick examples
 
 ```js
 ajax.get('example.com')
-    .then(function(response) {
-        console.log(response)
-    })
+.then(function(response) {
+  console.log(response)
+})
 ```
 
 ```js
 ajax.post('example.com', {
-		firstname: 'Pedro',
-		lastname: 'Sanchez',
-		age: 30
-	 })
-	 .then(function(response) {
-		// Make some useful actions
-	 })
-	 .catch(function(e) {
-		// Process the error
-	 })
+  firstname: 'Pedro',
+  lastname: 'Sanchez',
+  age: 30
+})
+.then(function(response) {
+  // Make some useful actions
+})
+.catch(function(e) {
+  // Process the error
+})
 ```
 
 Basics
