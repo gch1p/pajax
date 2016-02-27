@@ -18,19 +18,46 @@ function getXHR() {
   return xhr
 }
 
-function callablePromise() {
-  let promise, resolve, reject
-  promise = new Promise(function(_resolve, _reject) {
-    resolve = _resolve
-    reject = _reject
+function AjaxPromise(executor = function() {}) {
+  let _resolve, _reject
+  let p = new Promise(function (resolve, reject) {
+    _resolve = resolve
+    _reject = reject
+    return executor(resolve, reject)
   })
-  promise.resolve = function() {
-    resolve.apply(this, arguments)
+
+  p.__proto__ = AjaxPromise.prototype
+  p._resolve = _resolve
+  p._reject = _reject
+
+  return p
+}
+
+AjaxPromise.__proto__ = Promise
+AjaxPromise.prototype.__proto__ = Promise.prototype
+
+AjaxPromise.prototype.then = function(onFulfilled, onRejected) {
+  let p = Promise.prototype.then.call(this, onFulfilled, onRejected)
+  return this._prepare(p)
+}
+AjaxPromise.prototype.catch = function(onFulfilled, onRejected) {
+  let p = Promise.prototype.catch.call(this, onFulfilled, onRejected)
+  return this._prepare(p)
+}
+AjaxPromise.prototype._prepare = function(instance) {
+  if (!instance._prepared) {
+    instance.abort = this.abort
+    instance.send = this.send
+    instance.xhr = this.xhr
+    instance._prepared = true
   }
-  promise.reject = function() {
-    reject.apply(this, arguments)
-  }
-  return promise
+  return instance
+}
+AjaxPromise.prototype.resolve = function() {
+  this._resolve.apply(this, arguments)
+}
+AjaxPromise.prototype.reject = function() {
+  this._reject.apply(this, arguments)
 }
 
 function queryString(obj) {
@@ -91,15 +118,9 @@ function request(method, url, data = null, options = {}) {
     delayed = false,
     timeout_start
 
-  let promise = callablePromise()
-  promise.abort = function() {
-    if (xhr) {
-      xhr.abort()
-      --requests
-      aborted = true
-    }
-  }
-  promise._send = function() {
+  let promise = new AjaxPromise()
+  promise.abort = abort
+  promise.send = function() {
     // Prevent further send() calls
     if (sending) {
       return
@@ -174,13 +195,6 @@ function request(method, url, data = null, options = {}) {
       xhr.send(method != 'GET' ? data : null)
     }
   }
-  promise.before = function(callback) {
-    if (options.before) {
-      callback(xhr)
-      promise._send()
-    }
-    return promise
-  }
 
   // Get XHR object
   xhr = getXHR()
@@ -194,8 +208,18 @@ function request(method, url, data = null, options = {}) {
       }
     }
   }
-  //promise.xhr = xhr
 
+  promise.xhr = xhr
+  promise._prepared = true
+
+  function abort() {
+    if (xhr) {
+      xhr.abort()
+      --requests
+      aborted = true
+    }
+  }
+  
   // Handle the response
   function handleResponse() {
     // Prepare
@@ -207,16 +231,16 @@ function request(method, url, data = null, options = {}) {
     // --- https://stackoverflow.com/questions/7287706/ie-9-javascript-error-c00c023f
     if (new Date().getTime() - timeout_start >= options.timeout) {
       if (!options.attempts || ++attempts != options.attempts) {
-        promise._send()
+        promise.send()
       } else {
-        promise.reject(new Error('Timeout ('+url+')'))
+        promise.reject(new Error('Timeout ('+url+')'), response)
       }
       return
     }
 
     // Launch next stacked request
     if (request_stack.length) {
-      request_stack.shift()._send()
+      request_stack.shift().send()
     }
 
     // Handle response
@@ -307,14 +331,14 @@ function request(method, url, data = null, options = {}) {
       promise.resolve(response)
     } catch (e) {
       // Rejected
-      promise.reject(e)
+      promise.reject(e, response)
     }
   }
 
   // Handle errors
   function handleError(e) {
     --requests
-    promise.reject(e)
+    promise.reject(e, null)
   }
 
   // Normalize options
@@ -326,7 +350,7 @@ function request(method, url, data = null, options = {}) {
   options.withCredentials = !!options.withCredentials
   options.timeout = 'timeout' in options ? parseInt(options.timeout, 10) : 30000
   options.attempts = 'attempts' in options ? parseInt(options.attempts, 10) : 1
-  options.before = 'before' in options ? !!options.before : false
+  options.send = 'send' in options ? !!options.send : true
 
   // Guess if we're dealing with a cross-origin request
   i = url.match(/\/\/(.+?)\//)
@@ -387,8 +411,8 @@ function request(method, url, data = null, options = {}) {
   }
 
   // Start the request
-  if (!options.before) {
-    promise._send()
+  if (options.send) {
+    promise.send()
   }
 
   // Return promise
@@ -402,7 +426,7 @@ const ajax = {
     // Default response type in auto mode
     defaultResponseType: 'text',
     // Default response type for XDR in auto mode
-    defaultXdrResponseType: 'json',
+    defaultXdrResponseType: 'text',
     // Whether to add X-Requested-With: XMLHttpRequest header
     autoXRequestedWith: true,
     // Simultaneous requests limit
