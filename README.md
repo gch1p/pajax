@@ -1,7 +1,7 @@
 ajax
 ============
 
-`ajax` is a simple AJAX library based on ES6 `Promise`s. It supports `XMLHttpRequest2` special data like `ArrayBuffer`, `Blob` and `FormData`. It is a fork of `qwest`.
+`ajax` is a simple AJAX library based on ES6 Promises. It supports `XMLHttpRequest2` special data like `ArrayBuffer`, `Blob` and `FormData`. It is a fork of `qwest`.
 
 Install
 -------
