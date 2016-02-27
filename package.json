@@ -1,13 +1,13 @@
 {
-  "name": "ajax",
+  "name": "@evgenyzinoviev/pajax",
   "description": "Ajax library with XHR2, promises and requests limit. Forked from https://github.com/pyrsmk/qwest",
   "version": "5.0.0",
   "author": "Evgeny Zinoviev <me@ch1p.com>",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/evgenyzinoviev/ajax.git"
+    "url": "git+https://github.com/evgenyzinoviev/pajax.git"
   },
-  "main": "src/ajax.js",
+  "main": "index.js",
   "keywords": [
     "ajax",
     "request",
@@ -16,10 +16,10 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/evgenyzinoviev/ajax/issues",
+    "url": "https://github.com/evgenyzinoviev/pajax/issues",
     "email": "me@ch1p.com"
   },
-  "homepage": "https://github.com/evgenyzinoviev/ajax#readme",
+  "homepage": "https://github.com/evgenyzinoviev/pajax#readme",
   "directories": {
     "test": "tests"
   },
