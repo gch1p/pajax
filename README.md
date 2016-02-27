@@ -1,4 +1,4 @@
-ajax
+pajax
 ============
 
 `pajax` is a simple AJAX library based on ES6 Promises. It supports `XMLHttpRequest2` special data like `ArrayBuffer`, `Blob` and `FormData`. It was forked from [qwest](https://github.com/pyrsmk/qwest).
