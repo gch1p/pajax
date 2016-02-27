@@ -1,5 +1,5 @@
 {
-  "name": "@evgenyzinoviev/pajax",
+  "name": "pajax",
   "description": "Ajax library with XHR2, promises and requests limit. Forked from https://github.com/pyrsmk/qwest",
   "version": "5.0.0",
   "author": "Evgeny Zinoviev <me@ch1p.com>",
