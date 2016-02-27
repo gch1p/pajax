@@ -17,7 +17,7 @@ Install
 -------
 
 ```
-
+npm install --save pajax
 ```
 
 
@@ -25,9 +25,9 @@ Basics
 ------
 
 ```js
-const pajax = require('pajax')
+const ajax = require('pajax')
 
-pajax.`method`(`url`, `data`, `options`)
+ajax.`method`(`url`, `data`, `options`)
 .then(function(response) {
 	// Run when the request is successful
 })
@@ -60,7 +60,7 @@ The `catch` handler will be executed for status codes different from `2xx`; if n
 You can also make a request with custom HTTP method using the `map()` function :
 
 ```js
-pajax.map('PATCH', 'example.com', ...)
+ajax.map('PATCH', 'example.com', ...)
 .then(function() {
 	// Blah blah
 })
@@ -69,7 +69,7 @@ pajax.map('PATCH', 'example.com', ...)
 Configuration
 --------
 
-You can control some of the library default behaviours by changing corresponding settings in `pajax.config` object.
+You can control some of the library default behaviours by changing corresponding settings in `ajax.config` object.
 
 The available settings are:
 - ***defaultDataType***: `dataType` to be used by default if not specified in `options`. Default is `post`.
@@ -98,11 +98,11 @@ Let's say we have a gallery with a lot of images to load. We don't want the brow
 
 ```js
 // Browsers are limited in number of parallel downloads, setting it to 4 seems fair
-pajax.config.limit = 4
+ajax.config.limit = 4
 
 $('.gallery').children().forEach(function() {
 	var $this = $(this)
-	pajax.get($this.data('src'), {responseType: 'blob'})
+	ajax.get($this.data('src'), {responseType: 'blob'})
 	.then(function(response) {
 		$this.attr('src', window.URL.createObjectURL(response))
 		$this.fadeIn()
@@ -123,7 +123,7 @@ According to [#90](https://github.com/pyrsmk/qwest/issues/90) and [#99](https://
 You can abort a request by calling `abort()` method of the returned Promise.
 
 ```js
-let request = pajax.get('example.com')
+let request = ajax.get('example.com')
 .then(function(response) {
 	// Won't be called
 })
@@ -142,7 +142,7 @@ request.abort()
 You can access the XHR object by the `xhr` field of the returned Promise. If you want to get access to it before the request is sent, you have specify `send: false` option  to the request. In this case you have to manually send the request afterwards.
 
 ```js
-let req = pajax.get('example.com', null, { send: false })
+let req = ajax.get('example.com', null, { send: false })
 .then(function(response) {	
 })
 
@@ -158,7 +158,7 @@ Handling fallbacks
 XHR2 is not available on every browser, so, if needed, you can verify the XHR version with:
 
 ```js
-if (pajax.xhr2) {
+if (ajax.xhr2) {
 	// Actions for XHR2
 } else {
 	// Actions for XHR1
@@ -171,7 +171,7 @@ Receiving binary data in older browsers
 Getting binary data in legacy browsers needs a trick, as we can read it on [MDN](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/Sending_and_Receiving_Binary_Data#Receiving_binary_data_in_older_browsers). In this library, that's how we could handle it:
 
 ```js
-let req = pajax.get('example.com/file', null, { send: false })
+let req = ajax.get('example.com/file', null, { send: false })
 .then(function(response) {
 	// response is now a binary string
 })
