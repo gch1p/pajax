@@ -51,7 +51,7 @@ The available `options` are :
 - ***attempts***: the total number of times to attempt the request through timeouts; 1 by default; if you want to remove the limit set it to `null`
 - ***send***: whether to send the request immediately or not. Default is `true`. If you specify `false`, you have to manually call `send()` method of the returned Promise.
 
-Returns ES6 Promise instance with `abort()` ([see here](#abort)) and `send()` ([see here](#before)) methods and `xhr` property added.
+Returns ES6 Promise instance with `abort()` ([see here](#abort)) and `send()` methods and `xhr` ([see here](#before)) property added.
 
 The `catch` handler will be executed for status codes different from `2xx`; if no data has been received when `catch` is called, `response` will be `null`.
 
