@@ -134,7 +134,7 @@ let request = ajax.get('example.com')
 request.abort()
 ```
 
-<a name="before"></a>Access to the XHR object
+<a name="before"></a>Access the XHR object
 -----------------------------
 
 You can access the XHR object by the `xhr` field of the returned Promise. If you want to get access to it before the request is sent, you have specify `send: false` option  to the request. In this case you have to manually send the request afterwards.
@@ -144,7 +144,7 @@ let req = ajax.get('example.com', null, { send: false })
 .then(function(response) {	
 })
 
-let xhr = req.xhr // Access to the XHR object
+let xhr = req.xhr // Access the XHR object
 // Some code
 
 req.send() // Send the request
