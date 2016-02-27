@@ -1,7 +1,7 @@
 {
   "name": "pajax",
   "description": "Simple AJAX library with standard ES6 promises, requests limit and XHR2. No dependencies. Forked from https://github.com/pyrsmk/qwest",
-  "version": "5.0.2",
+  "version": "5.0.2.1",
   "author": "Evgeny Zinoviev <me@ch1p.com>",
   "repository": {
     "type": "git",

@@ -20,6 +20,9 @@ Install
 npm install --save pajax
 ```
 
+I use `pajax` with WebPack, Babel transpiler and `es6-promises` polyfill.
+An example on how to properly setup promises polyfill with WebPack you can find [here](https://gist.github.com/Couto/b29676dd1ab8714a818f).
+
 
 Basics
 ------
