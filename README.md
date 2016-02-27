@@ -182,7 +182,6 @@ Other notes
 ----------
 
 - Blackberry 10.2.0 (and maybe others) can [log an error saying json is not supported](https://github.com/pyrsmk/qwest/issues/94) : set `responseType` to `auto` to avoid the issue
-
 - If you want to set or get raw data, set `dataType` option to `text`
 - As stated on [StackOverflow](https://stackoverflow.com/questions/8464262/access-is-denied-error-on-xdomainrequest), XDomainRequest forbid HTTPS requests from HTTP scheme and vice versa
 - IE8 only supports basic request methods
