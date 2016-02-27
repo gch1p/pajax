@@ -1,59 +1,52 @@
-qwest 4.1.1
+ajax
 ============
 
-Qwest is a simple ajax library based on `promises` and that supports `XmlHttpRequest2` special data like `ArrayBuffer`, `Blob` and `FormData`.
+`ajax` is a simple AJAX library based on ES6 `Promise`s. It supports `XMLHttpRequest2` special data like `ArrayBuffer`, `Blob` and `FormData`. It is a fork of `qwest`.
 
 Install
 -------
 
 ```
-npm install qwest
-bower install qwest
-jam install qwest
+npm install .. (to be finished)
+bower install ..
+jam install ..
 ```
-
-What's new in 4.0?
-------------------
-
-- call `abort()` to abort an async request
-- group requests
-- `complete()` has been removed
 
 Quick examples
 --------------
 
 ```js
-qwest.get('example.com')
-	 .then(function(xhr, response) {
-		alert(response);
-	 });
+ajax.get('example.com')
+    .then(function(response) {
+        console.log(response)
+    })
 ```
 
 ```js
-qwest.post('example.com', {
+ajax.post('example.com', {
 		firstname: 'Pedro',
 		lastname: 'Sanchez',
 		age: 30
 	 })
-	 .then(function(xhr, response) {
+	 .then(function(response) {
 		// Make some useful actions
 	 })
-	 .catch(function(e, xhr, response) {
+	 .catch(function(e) {
 		// Process the error
-	 });
+	 })
 ```
 
 Basics
 ------
 
 ```js
-qwest.`method`(`url`, `data`, `options`, `before`)
-	 .then(function(xhr, response) {
+ajax.`method`(`url`, `data`, `options`, `before`)
+	 .then(function(response) {
 		// Run when the request is successful
 	 })
-	 .catch(function(e, xhr, response) {
+	 .catch(function(e) {
 		// Process the error
-	 });
+	 })
 ```
 
 The method is either `get`, `post`, `put` or `delete`. The `data` parameter can be a multi-dimensional array or object, a string, an ArrayBuffer, a Blob, etc... If you don't want to pass any data but specify some options, set data to `null`.
@@ -70,70 +63,27 @@ The available `options` are :
 - withCredentials : `false` by default; sends [credentials](http://www.w3.org/TR/XMLHttpRequest2/#user-credentials) with your XHR2 request ([more info in that post](https://dev.opera.com/articles/xhr2/#xhrcredentials))
 - timeout : the timeout for the request in ms; `30000` by default
 - attempts : the total number of times to attempt the request through timeouts; 1 by default; if you want to remove the limit set it to `null`
+- before : (to be explained)
 
 You can change the default data type with :
 
 ```js
-qwest.setDefaultDataType('json');
+(tbf)
 ```
 
 If you want to make a call with another HTTP method, you can use the `map()` function :
 
 ```js
-qwest.map('PATCH', 'example.com')
-	 .then(function() {
-	 	// Blah blah
-	 });
-```
-
-If you need to do a `sync` request, you must call `send()` at the end of your promise :
-
-```js
-qwest.get('example.com', {async: false})
+ajax.map('PATCH', 'example.com')
 	 .then(function() {
 	 	// Blah blah
 	 })
-	 .send();
-```
-
-Group requests
---------------
-
-Sometimes we need to call several requests and execute some tasks after all of them are completed. You can simply do it by chaining your requests like :
-
-```js
-qwest.get('example.com/articles')
-	 .get('example.com/users')
-	 .post('example.com/login', auth_data)
-	 .then(function(values) {
-	 	/*
-			Prints [ [xhr, response], [xhr, response], [xhr, response] ]
-		*/
-	 	console.log(values);
-	 });
-```
-
-If an error is encountered then `catch()` will be called and all requests will be aborted.
-
-Base URI
---------
-
-You can define a base URI for your requests. The string will be prepended to the other request URIs.
-
-```js
-qwest.base = 'http://example.com';
-
-// Will make a request to 'http://example.com/somepage'
-qwest.get('/somepage')
-	 .then(function() {
-	 	// Blah blah
-	 });
 ```
 
 Request limit
 -------------
 
-One of the greatest qwest functionnalities is the request limit. It avoids browser freezes and server overloads by freeing bandwidth and memory resources when you have a whole bunch of requests to do at the same time. Set the request limit and when the count is reached qwest will stock all further requests and start them when a slot is free.
+One of the greatest library functionnalities is the request limit. It avoids browser freezes and server overloads by freeing bandwidth and memory resources when you have a whole bunch of requests to do at the same time. Set the request limit and when the count is reached the library will stock all further requests and start them when a slot is free.
 
 Let's say we have a gallery with a lot of images to load. We don't want the browser to download all images at the same time to have a faster loading. Let's see how we can do that.
 
@@ -150,16 +100,16 @@ Let's say we have a gallery with a lot of images to load. We don't want the brow
 
 ```js
 // Browsers are limited in number of parallel downloads, setting it to 4 seems fair
-qwest.limit(4);
+ajax.config.limit = 4
 
 $('.gallery').children().forEach(function() {
-	var $this = $(this);
-	qwest.get($this.data('src'), {responseType: 'blob'})
+	var $this = $(this)
+	ajax.get($this.data('src'), {responseType: 'blob'})
 		 .then(function(xhr, response) {
-			$this.attr('src', window.URL.createObjectURL(response));
-			$this.fadeIn();
-		 });
-});
+			$this.attr('src', window.URL.createObjectURL(response))
+			$this.fadeIn()
+		 })
+})
 ```
 
 If you want to remove the limit, set it to `null`.
@@ -174,20 +124,18 @@ Aborting a request
 
 ```js
 // Start the request
-var request = qwest.get('example.com')
-				   .then(function(xhr, response) {
+let request = ajax.get('example.com')
+				   .then(function(response) {
 				 	  // Won't be called
 				   })
-				   .catch(function(xhr, response) {
+				   .catch(function(response) {
 				 	  // Won't be called either
-				   });
+				   })
 
 // Some code
 
-request.abort();
+request.abort()
 ```
-
-Not that only works with asynchroneous requests since synchroneous requests are... synchroneous.
 
 Set options to the XHR object
 -----------------------------
@@ -195,12 +143,13 @@ Set options to the XHR object
 If you want to apply some manual options to the `XHR` object, you can use the `before` option
 
 ```js
-qwest.get('example.com', null, null, function(xhr) {
+ajax.get('example.com', null, { before: true })
+     .before(function(xhr) {
 		xhr.upload.onprogress = function(e) {
 			// Upload in progress
-		};
-	 })
-	 .then(function(xhr, response) {
+		}
+     })
+	 .then(function(response) {
 		// Blah blah blah
 	 });
 ```
@@ -211,7 +160,7 @@ Handling fallbacks
 XHR2 is not available on every browser, so, if needed, you can simply verify the XHR version with :
 
 ```js
-if(qwest.xhr2) {
+if (ajax.xhr2) {
 	// Actions for XHR2
 }
 else {
@@ -222,11 +171,12 @@ else {
 Receiving binary data in older browsers
 ---------------------------------------
 
-Getting binary data in legacy browsers needs a trick, as we can read it on [MDN](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/Sending_and_Receiving_Binary_Data#Receiving_binary_data_in_older_browsers). In qwest, that's how we could handle it :
+Getting binary data in legacy browsers needs a trick, as we can read it on [MDN](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/Sending_and_Receiving_Binary_Data#Receiving_binary_data_in_older_browsers). In this library, that's how we could handle it :
 
 ```js
-qwest.get('example.com/file', null, null, function(xhr) {
-		xhr.overrideMimeType('text\/plain; charset=x-user-defined');
+ajax.get('example.com/file', null, {before: true})
+     .before(function(xhr) {
+		xhr.overrideMimeType('text\/plain; charset=x-user-defined')
 	 })
 	 .then(function(response) {
 	 	// response is now a binary string
@@ -239,7 +189,7 @@ Compatibility notes
 According to this [compatibility table](https://kangax.github.io/compat-table/es5), IE7/8 do not support using `catch` and `delete` as method name because these are reserved words. If you want to support those browsers you should write :
 
 ```js
-qwest.delete('example.com')
+ajax.delete('example.com')
 	 .then(function(){})
 	 .catch(function(){});
 ```
@@ -247,17 +197,17 @@ qwest.delete('example.com')
 Like this :
 
 ```js
-qwest['delete']('example.com')
+ajax['delete']('example.com')
 	 .then(function(){})
 	 ['catch'](function(){});
 ```
 
-XHR2 does not support `arraybuffer`, `blob` and `document` response types in synchroneous mode.
+(tbf: make a note about sync)
 
 The CORS object shipped with IE8 and 9 is `XDomainRequest`. This object __does not__ support `PUT` and `DELETE` requests and XHR2 types. Moreover, the `getResponseHeader()` method is not supported too which is used in the `auto` mode for detecting the reponse type. Then, the response type automatically fallbacks to `json` when in `auto` mode. If you expect another response type, please specify it explicitly. If you want to specify another default response type to fallback in `auto` mode, you can do it like this :
 
 ```js
-qwest.setDefaultXdrResponseType('text');
+ajax.config.defaultXdrResponseType = 'text'
 ```
 
 Last notes
