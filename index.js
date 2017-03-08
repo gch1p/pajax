@@ -219,7 +219,7 @@ function request(method, url, data = null, options = {}) {
       aborted = true
     }
   }
-  
+
   // Handle the response
   function handleResponse() {
     // Prepare
@@ -286,7 +286,7 @@ function request(method, url, data = null, options = {}) {
                 response = eval('('+xhr.responseText+')')
               }
             } catch (e) {
-              throw 'Error while parsing JSON body : ' + e
+              throw new Error('Error while parsing JSON body : ' + e)
             }
           }
           break
@@ -310,7 +310,7 @@ function request(method, url, data = null, options = {}) {
             console.error('ajax.js: failed to parse XML', e)
           }
           if (!response || !response.documentElement || response.getElementsByTagName('parsererror').length) {
-            throw 'Invalid XML'
+            throw new Error('Invalid XML')
           }
           break
 
@@ -324,7 +324,7 @@ function request(method, url, data = null, options = {}) {
       // a 409 is returned
       // --- https://stackoverflow.com/questions/10046972/msie-returns-status-code-of-1223-for-ajax-request
       if ('status' in xhr && !/^2|1223/.test(xhr.status)) {
-        throw xhr.status+' ('+xhr.statusText+')'
+        throw new Error(xhr.status+' ('+xhr.statusText+')')
       }
 
       // Fulfilled
